@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>今天喝什么奶茶</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"PingFang SC",sans-serif;}
+body{
+  background:#f0e9db;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:24px 16px;
+}
+.title{
+  font-size:52px;
+  font-weight:bold;
+  color:#222;
+  text-align:center;
+}
+.sub-title{
+  width: min(90vw, 500px);
+  background:#fff;
+  padding:10px 24px;
+  border-radius:999px;
+  font-size:22px;
+  color:#444;
+  text-align:center;
+  margin:12px 0 40px;
+}
+.wrap{
+  position:relative;
+  width:min(92vw,540px);
+  height:min(92vw,540px);
+}
+/* 顶部红色箭头 */
+.pointer{
+  position:absolute;
+  z-index:30;
+  top:-2px;
+  left:50%;
+  transform:translateX(-50%);
+  width:0;
+  height:0;
+  border-left:32px solid transparent;
+  border-right:32px solid transparent;
+  border-top:64px solid #ed2624;
+}
+.wheel{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  border:16px solid #d48b4e;
+  position:relative;
+  overflow:hidden;
+  transition: transform 4.8s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+  z-index:1;
+}
+/* 扇形底色 */
+.sector-bg{
+  position:absolute;
+  left:50%;
+  top:0;
+  width:50%;
+  height:100%;
+  transform-origin: 0 50%;
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  z-index:1;
+}
+/* 扇形分隔线 */
+.divider{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:50%;
+  height:2px;
+  background:#d48b4e;
+  transform-origin: left center;
+  z-index:7;
+}
+/* 文字标签：整体往外侧偏移，不压中间圆环 */
+.arc-label{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:46%;
+  height:0;
+  transform-origin: left center;
+  z-index:10;
+  pointer-events:none;
+}
+.arc-text{
+  position:absolute;
+  top:50%;
+  left:72%;
+  font-size:17px;
+  font-weight:700;
+  color:#222;
+  white-space:nowrap;
+  transform: translateY(-50%);
+}
+/* 中间圆环层级最低 */
+.wheel-center{
+  position:absolute;
+  width:110px;
+  height:110px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  background:#ffffff;
+  border-radius:50%;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+  pointer-events:none;
+}
+.tip{
+  margin-top:36px;
+  font-size:22px;
+  color:#777;
+}
+/* 弹窗 */
+.modal{
+  position:fixed;
+  left:0;top:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99;
+}
+.modal-box{
+  background:#fff;
+  padding:32px 40px;
+  border-radius:16px;
+  text-align:center;
+}
+.modal-title{
+  font-size:24px;
+  margin-bottom:16px;
+}
+.modal-result{
+  font-size:28px;
+  color:#d46028;
+  font-weight:bold;
+  margin-bottom:24px;
+}
+.modal-btn{
+  padding:10px 26px;
+  background:#d48b4e;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  font-size:18px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+<h1 class="title">今天喝什么奶茶</h1>
+<div class="sub-title">交给命运 · 转到什么喝什么</div>
+<div class="wrap">
+  <div class="pointer"></div>
+  <div class="wheel" id="wheel">
+    <!-- 扇形底色 -->
+    <div class="sector-bg" style="transform:rotate(0deg);background:#fff7e9"></div>
+    <div class="sector-bg" style="transform:rotate(30deg);background:#fff9ee"></div>
+    <div class="sector-bg" style="transform:rotate(60deg);background:#fff7e9"></div>
+    <div class="sector-bg" style="transform:rotate(90deg);background:#fff9ee"></div>
+    <div class="sector-bg" style="transform:rotate(120deg);background:#fff7e9"></div>
+    <div class="sector-bg" style="transform:rotate(150deg);background:#fff9ee"></div>
+    <div class="sector-bg" style="transform:rotate(180deg);background:#fff7e9"></div>
+    <div class="sector-bg" style="transform:rotate(210deg);background:#fff9ee"></div>
+    <div class="sector-bg" style="transform:rotate(240deg);background:#fff7e9"></div>
+    <div class="sector-bg" style="transform:rotate(270deg);background:#fff9ee"></div>
+    <div class="sector-bg" style="transform:rotate(300deg);background:#fff7e9"></div>
+    <div class="sector-bg" style="transform:rotate(330deg);background:#fff9ee"></div>
+
+    <!-- 分隔线 -->
+    <div class="divider" style="transform:rotate(0deg)"></div>
+    <div class="divider" style="transform:rotate(30deg)"></div>
+    <div class="divider" style="transform:rotate(60deg)"></div>
+    <div class="divider" style="transform:rotate(90deg)"></div>
+    <div class="divider" style="transform:rotate(120deg)"></div>
+    <div class="divider" style="transform:rotate(150deg)"></div>
+    <div class="divider" style="transform:rotate(180deg)"></div>
+    <div class="divider" style="transform:rotate(210deg)"></div>
+    <div class="divider" style="transform:rotate(240deg)"></div>
+    <div class="divider" style="transform:rotate(270deg)"></div>
+    <div class="divider" style="transform:rotate(300deg)"></div>
+    <div class="divider" style="transform:rotate(330deg)"></div>
+
+    <!-- 选项文字：已外移到扇形外侧 -->
+    <div class="arc-label" style="transform:rotate(15deg)"><div class="arc-text">奈雪的茶</div></div>
+    <div class="arc-label" style="transform:rotate(45deg)"><div class="arc-text">爷爷不泡茶</div></div>
+    <div class="arc-label" style="transform:rotate(75deg)"><div class="arc-text">蜜雪冰城</div></div>
+    <div class="arc-label" style="transform:rotate(105deg)"><div class="arc-text">茶百道</div></div>
+    <div class="arc-label" style="transform:rotate(135deg)"><div class="arc-text">不喝了</div></div>
+    <div class="arc-label" style="transform:rotate(165deg)"><div class="arc-text">茉莉奶白</div></div>
+    <div class="arc-label" style="transform:rotate(195deg)"><div class="arc-text">茶颜悦色</div></div>
+    <div class="arc-label" style="transform:rotate(225deg)"><div class="arc-text">古茗</div></div>
+    <div class="arc-label" style="transform:rotate(255deg)"><div class="arc-text">喜茶</div></div>
+    <div class="arc-label" style="transform:rotate(285deg)"><div class="arc-text">库迪</div></div>
+    <div class="arc-label" style="transform:rotate(315deg)"><div class="arc-text">霸王茶姬</div></div>
+    <div class="arc-label" style="transform:rotate(345deg)"><div class="arc-text">书亦烧仙草</div></div>
+
+    <div class="wheel-center">🥤</div>
+  </div>
+</div>
+<div class="tip">点击转盘开始抽奶茶</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-title">🎉 今日奶茶命运</div>
+    <div class="modal-result" id="resultText"></div>
+    <button class="modal-btn" id="closeBtn">确定</button>
+  </div>
+</div>
+
+<script>
+const wheel = document.getElementById('wheel');
+const modal = document.getElementById('modal');
+const resultText = document.getElementById('resultText');
+const closeBtn = document.getElementById('closeBtn');
+
+const list = [
+  "奈雪的茶","爷爷不泡茶","蜜雪冰城","茶百道","不喝了","茉莉奶白",
+  "茶颜悦色","古茗","喜茶","库迪","霸王茶姬","书亦烧仙草"
+];
+
+let isRunning = false;
+let totalRotate = 0;
+const sectorAngle = 360 / list.length;
+
+wheel.onclick = ()=>{
+  if(isRunning) return;
+  isRunning = true;
+
+  const randomIdx = Math.floor(Math.random() * list.length);
+  const centerAngle = randomIdx * sectorAngle + sectorAngle / 2;
+  const rotateThisTime = (360 - centerAngle + 360) % 360;
+  const targetRotate = totalRotate + 360 * 6 + rotateThisTime;
+
+  wheel.style.transform = `rotate(${targetRotate}deg)`;
+  totalRotate = targetRotate;
+
+  wheel.ontransitionend = ()=>{
+    isRunning = false;
+    resultText.innerText = list[randomIdx];
+    modal.style.display = 'flex';
+  }
+}
+
+closeBtn.onclick = ()=>{
+  modal.style.display = 'none';
+}
+</script>
+</body>
+</html>
